@@ -28,7 +28,7 @@ def get_text_input_lists(file_path):
 
 
 # Example usage
-list_a, list_b = get_text_input_lists("input.txt")
+list_a, list_b = get_text_input_lists("day_01_input.txt")
 print("List A:", list_a)
 print("List B:", list_b)
 
