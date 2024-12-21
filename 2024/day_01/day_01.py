@@ -57,3 +57,39 @@ print("Sum of distances:", sum(list_distances))
 
 
 # %%
+# Find Multiple of left items in right items
+
+
+def count_occurances_in_list(item, list_to_count_in):
+    count = list_to_count_in.count(item)
+    return count
+
+
+print(count_occurances_in_list(1, [1, 1, 1, 2]))
+
+
+# %%
+
+
+def find_sum_of_multiples(left_list, right_list):
+    running_sum = 0
+
+    for item_left_list in left_list:
+        count_this_item = count_occurances_in_list(item_left_list, right_list)
+        running_sum += count_this_item * item_left_list
+
+    return running_sum
+
+
+left_list, right_list = get_text_input_lists("day_01_input.txt")
+
+left_list = [int(x) for x in left_list]
+right_list = [int(x) for x in right_list]
+
+print(f"Left list: {left_list}")
+print(f"Right list: {right_list}")
+
+print(find_sum_of_multiples(left_list, right_list))
+
+
+# %%
