@@ -71,22 +71,6 @@ def get_text_input(file_path):
     return ls_rules, ls_safety_manuals
 
 
-ls_rules, ls_safety_manuals = get_text_input("day_05_input.txt")
-
-# %%
-
-pprint_ls(ls_rules, "ls_rules")
-
-
-# %%
-
-
-pprint_ls(ls_safety_manuals, "ls_safety_manuals")
-
-
-# %%
-
-
 def validate_safety_manual(safety_manual_page_order, ls_rules):
     print(f"Safety manual page order: {safety_manual_page_order}")
     for rule in ls_rules:
@@ -114,6 +98,67 @@ def validate_safety_manual(safety_manual_page_order, ls_rules):
     return True
 
 
+def correct_invalid_safety_manual(safety_manual, ls_rules):
+    safety_manual_page_order = safety_manual.split(",")
+    print(f"Safety manual starting page order: {safety_manual_page_order}")
+    for rule in ls_rules:
+        print(f"Rule: {rule}")
+        first_page, second_page = rule.split("|")
+        print(f"first_page: {first_page}, second_page: {second_page}")
+
+        if (
+            first_page not in safety_manual_page_order
+            or second_page not in safety_manual_page_order
+        ):
+            print(f"Both pages not found")
+            continue
+
+        first_page_loc = safety_manual_page_order.index(first_page)
+        second_page_loc = safety_manual_page_order.index(second_page)
+        print(f"First page loc: {first_page_loc}")
+        print(f"Second page loc: {second_page_loc}")
+
+        if first_page_loc > second_page_loc:
+            print(
+                f"first_page: {first_page}@{first_page_loc} is not before second_page: {second_page}@{second_page_loc}"
+            )
+            move_page = safety_manual_page_order.pop(second_page_loc)
+            safety_manual_page_order.insert(first_page_loc, move_page)
+
+    return safety_manual_page_order
+
+
+ls_test_safety_manuals = ["75,97,47,61,53"]
+ls_test_rules = [
+    "47|53",
+    "97|13",
+    "97|61",
+    "97|47",
+    "75|29",
+    "61|13",
+    "75|53",
+    "29|13",
+    "97|29",
+    "53|29",
+    "61|53",
+    "97|53",
+    "61|29",
+    "47|13",
+    "75|47",
+    "97|75",
+    "47|61",
+    "75|61",
+    "47|29",
+    "75|13",
+    "53|13",
+]
+
+safety_manual_page_order = correct_invalid_safety_manual(
+    ls_test_safety_manuals[0], ls_test_rules
+)
+print(safety_manual_page_order)
+
+
 def get_pages_and_sum_valid_safety_manuals(ls_rules, ls_safety_manuals):
     ls_passing_middle_pages = []
     total_sum_of_added_middle_pages = 0
@@ -127,6 +172,25 @@ def get_pages_and_sum_valid_safety_manuals(ls_rules, ls_safety_manuals):
             total_sum_of_added_middle_pages += int(middle_page_of_manual)
 
     return ls_passing_middle_pages, total_sum_of_added_middle_pages
+
+
+# %%
+
+
+ls_rules, ls_safety_manuals = get_text_input("day_05_input.txt")
+
+# %%
+
+pprint_ls(ls_rules, "ls_rules")
+
+
+# %%
+
+
+pprint_ls(ls_safety_manuals, "ls_safety_manuals")
+
+
+# %%
 
 
 ls_test_safety_manuals = ["75,47,61,53,29", "75,97,47,61,53"]
