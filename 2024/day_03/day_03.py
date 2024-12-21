@@ -14,7 +14,30 @@ def get_text_input_lists(file_path):
     return text_lines
 
 
-def split_line_to_functions(line):
+def combine_ls_strings(ls_strings):
+    all_text = ""
+    for str_item in ls_strings:
+        all_text = all_text + str_item
+
+    return all_text
+
+
+def split_string_to_do_dont(string):
+    # add a do at the beginning to default to starting with do
+    string = "do()" + string
+    # Use a positive lookahead to split by "do()" or "don't()" but keep the delimiters
+    split_parts = re.split(r"(?=do\(\)|don't\(\))", string)
+    return split_parts
+
+
+ls_do_donts = split_string_to_do_dont(
+    "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+)
+for do_dont in ls_do_donts:
+    print(do_dont)
+
+
+def split_string_to_functions(line):
     ls_line_funcs = re.findall(r"mul\(\d{1,3},\d{1,3}\)", line)
     return ls_line_funcs
 
@@ -31,19 +54,24 @@ def perform_str_function(string_func):
     return item_1 * item_2
 
 
-print(perform_str_function("mul(970,37)"))
-
 # %%
 # Main #
 
 
 list_lines = get_text_input_lists("day_03_input.txt")
+all_text = combine_ls_strings(list_lines)
+
+ls_do_donts = split_string_to_do_dont(all_text)
+
+ABIDE_BY_DO_DONTS = True
+
 
 running_total = 0
-for line_item in list_lines:
-    print("-" * 100)
-    print(line_item)
-    ls_line_funcs = split_line_to_functions(line_item)
+for do_dont in ls_do_donts:
+    if ABIDE_BY_DO_DONTS and do_dont.startswith("don't"):
+        continue
+
+    ls_line_funcs = split_string_to_functions(do_dont)
 
     for line_func in ls_line_funcs:
         print("-" * 50)
