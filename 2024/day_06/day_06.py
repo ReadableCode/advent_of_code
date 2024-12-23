@@ -143,13 +143,13 @@ def play_out_map(
     max_steps,
 ):
     coords_of_person = init_coords_of_player
-    map = input_map.copy()
+    finished_map = copy.deepcopy(input_map)
     player_facing_direction = init_player_facing_direction
     running_count_steps = 0
     while True:
         try:
-            map, coords_of_person, player_facing_direction = take_step(
-                map, coords_of_person, player_facing_direction
+            finished_map, coords_of_person, player_facing_direction = take_step(
+                finished_map, coords_of_person, player_facing_direction
             )
             running_count_steps += 1
             if running_count_steps >= max_steps:
@@ -157,12 +157,10 @@ def play_out_map(
             if animate:
                 # clear the screen
                 os.system("cls" if os.name == "nt" else "clear")
-                pprint_ls(map)
+                pprint_ls(finished_map)
                 sleep(sleep_time)
         except Exception as e:
             break
-
-    finished_map = map.copy()
 
     was_hung = running_count_steps >= max_steps
 
