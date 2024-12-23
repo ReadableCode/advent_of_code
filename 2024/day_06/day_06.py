@@ -5,6 +5,8 @@ import copy
 import os
 from time import sleep
 
+from tqdm import tqdm
+
 # %%
 # Vars #
 
@@ -107,7 +109,6 @@ def take_step(curr_map, coords_tup_person, direction_facing):
         if facing_coords_state in ["obstacle", "placed_obstacle"]:
             direction_facing = get_rotated_direction(input_direction=direction_facing)
         elif facing_coords_state in ["off_map"]:
-            print("Character off map")
             raise Exception("cant move off map")
         else:
             break
@@ -159,13 +160,9 @@ def play_out_map(
                 pprint_ls(map)
                 sleep(sleep_time)
         except Exception as e:
-            print(e)
             break
 
     finished_map = map.copy()
-    print("-" * 100)
-    print("Finished map")
-    pprint_ls(finished_map)
 
     was_hung = running_count_steps >= max_steps
 
@@ -219,8 +216,10 @@ finished_map, was_hung = play_out_map(
     sleep_time=SLEEP_TIME,
     max_steps=100000,
 )
+print("Finished map")
+pprint_ls(finished_map)
 traversed_spaces = count_traversed_spaces(finished_map)
-print(traversed_spaces)
+print(f"Traversed spaces: {traversed_spaces}")
 
 
 # %%
@@ -235,15 +234,19 @@ finished_map, was_hung = play_out_map(
     sleep_time=SLEEP_TIME,
     max_steps=100000,
 )
+print("Finished map")
+pprint_ls(finished_map)
 traversed_spaces = count_traversed_spaces(finished_map)
-print(traversed_spaces)
+print(f"Traversed spaces: {traversed_spaces}")
 
 ls_possible_obstacle_coords = find_possible_obstacle_placements_coords(finished_map)
-pprint_ls(ls_possible_obstacle_coords)
-
+print(ls_possible_obstacle_coords)
 
 ls_hung_coords = []
-for possible_obstacle_coords in ls_possible_obstacle_coords:
+# Wrap the loop with tqdm for progress tracking
+for possible_obstacle_coords in tqdm(
+    ls_possible_obstacle_coords, desc="Testing obstacles", unit="obstacle"
+):
     input_map_with_added_obstacle = get_map_with_added_obstacle(
         input_map, possible_obstacle_coords
     )
@@ -259,12 +262,10 @@ for possible_obstacle_coords in ls_possible_obstacle_coords:
     if was_hung:
         ls_hung_coords.append(possible_obstacle_coords)
 
-    print("finished_map_with_obstacle")
-    pprint_ls(finished_map_with_obstacle)
-    print(f"was_hung: {was_hung}")
-
 print(f"Hung Locations: {ls_hung_coords}")
 print(f"Total locations that obstacle hangs map: {len(ls_hung_coords)}")
+
+# wrong Total locations that obstacle hangs map: 283
 
 
 # %%
