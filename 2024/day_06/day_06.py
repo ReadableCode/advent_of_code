@@ -52,9 +52,9 @@ def get_state_at_cords(curr_map, coords_tup):
     coords_x, coords_y = coords_tup[0], coords_tup[1]
 
     if (
-        coords_x > len(curr_map)
+        coords_x > len(curr_map) - 1
         or coords_x < 0
-        or coords_y > len(curr_map[0])
+        or coords_y > len(curr_map[0]) - 1
         or coords_y < 0
     ):
         return "off_map"
@@ -108,10 +108,8 @@ def take_step(curr_map, coords_tup_person, direction_facing):
             print("Character off map")
             raise Exception("cant move off map")
         else:
-            print(f"Can move forward in direction: {direction_facing}")
             break
 
-    print(f"Moving {direction_facing} to {facing_coords}")
     curr_map[facing_coords[0]][facing_coords[1]] = dict_direction_to_sprite[
         direction_facing
     ]
@@ -134,7 +132,7 @@ def count_traversed_spaces(map):
 
 
 def play_out_map(
-    input_map, init_coords_of_player, init_player_facing_direction, animate=False
+    input_map, init_coords_of_player, init_player_facing_direction, animate, sleep_time
 ):
     coords_of_person = init_coords_of_player
     map = input_map.copy()
@@ -147,10 +145,10 @@ def play_out_map(
             if animate:
                 # clear the screen
                 os.system("cls" if os.name == "nt" else "clear")
-            pprint_ls(map)
-            if animate:
-                sleep(0.1)
-        except:
+                pprint_ls(map)
+                sleep(SLEEP_TIME)
+        except Exception as e:
+            print(e)
             break
 
     finished_map = map.copy()
@@ -161,7 +159,9 @@ def play_out_map(
     return finished_map
 
 
-TEST_MODE = True
+SLEEP_TIME = 0.06
+ANIMATE = False
+TEST_MODE = False
 if TEST_MODE:
     input_map = get_text_input_lists("day_06_input_text.txt")
 else:
@@ -172,7 +172,13 @@ print("input_map")
 pprint_ls(input_map)
 
 init_coords_of_player, facing_direction = find_init_of_player(input_map)
-finished_map = play_out_map(input_map, init_coords_of_player, facing_direction)
+finished_map = play_out_map(
+    input_map,
+    init_coords_of_player,
+    facing_direction,
+    animate=ANIMATE,
+    sleep_time=SLEEP_TIME,
+)
 traversed_spaces = count_traversed_spaces(finished_map)
 print(traversed_spaces)
 
