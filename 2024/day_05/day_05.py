@@ -93,60 +93,41 @@ def validate_safety_manual(safety_manual_page_order, ls_rules):
     return True
 
 
-def get_perfect_order(rules):
-    # Extract all unique pages
-    pages = set()
-    for rule in rules:
-        left, right = rule.split("|")
-        pages.add(left)
-        pages.add(right)
-
-    # Build adjacency list and in-degree dictionary
-    adjacency_list = {page: [] for page in pages}
-    in_degree = {page: 0 for page in pages}
-
-    for rule in rules:
-        left, right = rule.split("|")
-        adjacency_list[left].append(right)
-        in_degree[right] += 1
-
-    # Initialize order and find pages with no dependencies
-    order = []
-    no_dependencies = [page for page in pages if in_degree[page] == 0]
-
-    # Perform topological sort
-    while no_dependencies:
-        current = no_dependencies.pop()
-        order.append(current)
-
-        for neighbor in adjacency_list[current]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                no_dependencies.append(neighbor)
-
-    # Check for cycles (if not all pages are in order)
-    if len(order) != len(pages):
-        raise ValueError("Invalid rules: cyclic dependency detected!")
-
-    return order
-
-
 def correct_invalid_safety_manual(safety_manual_page_order, ls_rules):
-    starting_order = safety_manual_page_order.copy()
 
-    perfect_order = get_perfect_order(ls_test_rules)
-    fixed_safety_manual_order = [
-        perf_item
-        for perf_item in perfect_order
-        if perf_item in safety_manual_page_order
-    ]
-    for non_ruled_item in safety_manual_page_order:
-        if non_ruled_item not in perfect_order:
-            fixed_safety_manual_order.append(non_ruled_item)
+    # while True:
+    # is_sorted = True
+    # for i in range(len(update) - 1):
+    #     # Out of order?
+    #     if (update[i + 1], update[i]) in rules:
+    #         is_sorted = False
+    #         update[i], update[i + 1] = update[i + 1], update[i]
+
+    # if is_sorted:
+    #     return update
+    starting_order = safety_manual_page_order.copy()
+    print(f"Starting order: {starting_order}")
+
+    while True:
+        is_sorted = True
+        for i in range(len(safety_manual_page_order) - 1):
+            if (
+                f"{safety_manual_page_order[i+1]}|{safety_manual_page_order[i]}"
+                in ls_rules
+            ):
+                is_sorted = False
+                safety_manual_page_order[i + 1], safety_manual_page_order[i] = (
+                    safety_manual_page_order[i],
+                    safety_manual_page_order[i + 1],
+                )
+
+        if is_sorted:
+            break
+
     print(
-        f"Fixed Invalid Safety Mnaual: Starting Order was: {starting_order} > Fixed List is: {fixed_safety_manual_order}"
+        f"Fixed Invalid Safety Mnaual: Starting Order was: {starting_order} > Fixed List is: {safety_manual_page_order}"
     )
-    return fixed_safety_manual_order
+    return safety_manual_page_order
 
 
 def get_pages_and_sum_valid_safety_manuals(ls_rules, ls_safety_manuals):
