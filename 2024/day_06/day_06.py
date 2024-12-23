@@ -1,6 +1,7 @@
 # %%
 # Imports #
 
+import copy
 import os
 from time import sleep
 
@@ -19,6 +20,7 @@ def get_text_input_lists(file_path):
 
 dict_states = {
     "#": "obstacle",
+    "O": "placed_obstacle",
     ".": "untraversed",
     "^": "traversed_north",
     "v": "traversed_south",
@@ -102,7 +104,7 @@ def take_step(curr_map, coords_tup_person, direction_facing):
     while True:
         facing_coords = get_coords_in_direction(coords_tup_person, direction_facing)
         facing_coords_state = get_state_at_cords(curr_map, facing_coords)
-        if facing_coords_state in ["obstacle"]:
+        if facing_coords_state in ["obstacle", "placed_obstacle"]:
             direction_facing = get_rotated_direction(input_direction=direction_facing)
         elif facing_coords_state in ["off_map"]:
             print("Character off map")
@@ -118,9 +120,9 @@ def take_step(curr_map, coords_tup_person, direction_facing):
     return curr_map, coords_tup_person, direction_facing
 
 
-def count_traversed_spaces(map):
+def count_traversed_spaces(input_map):
     traversed_spaces = 0
-    for row in map:
+    for row in input_map:
         for col in row:
             if (
                 "traversed" in dict_states[col]
@@ -132,21 +134,30 @@ def count_traversed_spaces(map):
 
 
 def play_out_map(
-    input_map, init_coords_of_player, init_player_facing_direction, animate, sleep_time
+    input_map,
+    init_coords_of_player,
+    init_player_facing_direction,
+    animate,
+    sleep_time,
+    max_steps,
 ):
     coords_of_person = init_coords_of_player
     map = input_map.copy()
     player_facing_direction = init_player_facing_direction
+    running_count_steps = 0
     while True:
         try:
             map, coords_of_person, player_facing_direction = take_step(
                 map, coords_of_person, player_facing_direction
             )
+            running_count_steps += 1
+            if running_count_steps >= max_steps:
+                break
             if animate:
                 # clear the screen
                 os.system("cls" if os.name == "nt" else "clear")
                 pprint_ls(map)
-                sleep(SLEEP_TIME)
+                sleep(sleep_time)
         except Exception as e:
             print(e)
             break
@@ -156,12 +167,36 @@ def play_out_map(
     print("Finished map")
     pprint_ls(finished_map)
 
-    return finished_map
+    was_hung = running_count_steps >= max_steps
 
+    return finished_map, was_hung
+
+
+def find_possible_obstacle_placements_coords(played_map):
+    ls_coords = []
+    for r, row in enumerate(played_map):
+        for c, col in enumerate(row):
+            if (
+                "traversed" in dict_states[col]
+                and "untraversed" not in dict_states[col]
+            ):
+                ls_coords.append((r, c))
+
+    return ls_coords
+
+
+def get_map_with_added_obstacle(input_map, obstacle_coords):
+    return_map = copy.deepcopy(input_map)
+    return_map[obstacle_coords[0]][obstacle_coords[1]] = "O"
+    return return_map
+
+
+# %%
+# Main #
 
 SLEEP_TIME = 0.06
 ANIMATE = False
-TEST_MODE = False
+TEST_MODE = True
 if TEST_MODE:
     input_map = get_text_input_lists("day_06_input_text.txt")
 else:
@@ -171,16 +206,65 @@ print("-" * 100)
 print("input_map")
 pprint_ls(input_map)
 
+
+# %%
+# Main Part One #
+
 init_coords_of_player, facing_direction = find_init_of_player(input_map)
-finished_map = play_out_map(
+finished_map, was_hung = play_out_map(
     input_map,
     init_coords_of_player,
     facing_direction,
     animate=ANIMATE,
     sleep_time=SLEEP_TIME,
+    max_steps=100000,
 )
 traversed_spaces = count_traversed_spaces(finished_map)
 print(traversed_spaces)
+
+
+# %%
+# Main Part Two #
+
+init_coords_of_player, facing_direction = find_init_of_player(input_map)
+finished_map, was_hung = play_out_map(
+    input_map,
+    init_coords_of_player,
+    facing_direction,
+    animate=ANIMATE,
+    sleep_time=SLEEP_TIME,
+    max_steps=100000,
+)
+traversed_spaces = count_traversed_spaces(finished_map)
+print(traversed_spaces)
+
+ls_possible_obstacle_coords = find_possible_obstacle_placements_coords(finished_map)
+pprint_ls(ls_possible_obstacle_coords)
+
+
+ls_hung_coords = []
+for possible_obstacle_coords in ls_possible_obstacle_coords:
+    input_map_with_added_obstacle = get_map_with_added_obstacle(
+        input_map, possible_obstacle_coords
+    )
+    finished_map_with_obstacle, was_hung = play_out_map(
+        input_map_with_added_obstacle,
+        init_coords_of_player,
+        facing_direction,
+        animate=ANIMATE,
+        sleep_time=SLEEP_TIME,
+        max_steps=100000,
+    )
+
+    if was_hung:
+        ls_hung_coords.append(possible_obstacle_coords)
+
+    print("finished_map_with_obstacle")
+    pprint_ls(finished_map_with_obstacle)
+    print(f"was_hung: {was_hung}")
+
+print(f"Hung Locations: {ls_hung_coords}")
+print(f"Total locations that obstacle hangs map: {len(ls_hung_coords)}")
 
 
 # %%
