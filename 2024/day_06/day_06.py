@@ -196,7 +196,7 @@ def get_map_with_added_obstacle(input_map, obstacle_coords):
 
 SLEEP_TIME = 0.06
 ANIMATE = False
-TEST_MODE = True
+TEST_MODE = False
 if TEST_MODE:
     input_map = get_text_input_lists("day_06_input_text.txt")
 else:
