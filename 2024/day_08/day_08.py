@@ -147,7 +147,7 @@ def place_all_antinodes(ls_ls_map):
 # %%
 # Main #
 
-TEST_MODE = True
+TEST_MODE = False
 if TEST_MODE:
     ls_ls_map = get_text_input_lists("day_08_input_test.txt")
 else:
