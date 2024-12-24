@@ -64,7 +64,7 @@ def get_files_on_disk(disk_input):
         if len(disk_input) > 1:
             space_after = disk_input[1]
         else:
-            space_after = 0
+            space_after = "0"
 
         dict_this_item = {"num_blocks": num_blocks, "space_after": space_after}
         ls_dict_files[file_id] = dict_this_item
@@ -76,29 +76,28 @@ def get_files_on_disk(disk_input):
 
 
 def save_to_disk(ls_dict_files):
-    str_disk_data = ""
+    ls_disk_data = []
     for id, file_data in ls_dict_files.items():
         num_blocks = int(file_data["num_blocks"])
         space_after = int(file_data["space_after"])
 
-        str_disk_data = str_disk_data + (str(id) * num_blocks)
-        str_disk_data = str_disk_data + (space_after * ".")
+        ls_disk_data.extend((num_blocks * [str(id)]))
 
-    return str_disk_data
+        ls_disk_data.extend((space_after * ["."]))
+
+    return ls_disk_data
 
 
-def compact_disc(disk_input):
-    ls_disk_input = list(disk_input)
-
-    for idx in tqdm(range(len(ls_disk_input) - 1, 0, -1), desc="Compacting Disc"):
-        if ls_disk_input[idx] == ".":
+def compact_disc(ls_disk_data):
+    for idx in tqdm(range(len(ls_disk_data) - 1, 0, -1), desc="Compacting Disc"):
+        if ls_disk_data[idx] == ".":
             continue
-        if ls_disk_input.index(".") < idx:
+        if ls_disk_data.index(".") < idx:
             # Move the bit to the nearest empty space
-            ls_disk_input[ls_disk_input.index(".")] = ls_disk_input[idx]
-            ls_disk_input[idx] = "."
+            ls_disk_data[ls_disk_data.index(".")] = ls_disk_data[idx]
+            ls_disk_data[idx] = "."
 
-    return "".join(ls_disk_input)
+    return ls_disk_data
 
 
 def calculate_checksum(str_disk_data):
@@ -115,24 +114,45 @@ def calculate_checksum(str_disk_data):
 
 TEST_MODE = True
 if TEST_MODE:
-    ls_disk_input = get_text_input_lists("day_09_input_test.txt")
+    input_file = "day_09_input_test.txt"
+    ls_dict_file = "day_09_output_test_files.json"
+    uncompacted_file = "day_09_output_test_uncompacted.txt"
+    compacted_file = "day_09_output_test_compacted.txt"
 else:
-    ls_disk_input = get_text_input_lists("day_09_input.txt")
+    input_file = "day_09_input.txt"
+    ls_dict_file = "day_09_output_files.json"
+    uncompacted_file = "day_09_output_uncompacted.txt"
+    compacted_file = "day_09_output_compacted.txt"
+
+ls_disk_data = get_text_input_lists(input_file)
 
 print("-" * 100)
-print("".join(ls_disk_input))
+print("".join(ls_disk_data))
 
-ls_dict_files = get_files_on_disk(ls_disk_input)
+ls_dict_files = get_files_on_disk(ls_disk_data)
 
-str_disk_data_uncompacted = save_to_disk(ls_dict_files)
+with open(ls_dict_file, "w") as file:
+    json.dump(ls_dict_files, file)
 
-print(f"str_disk_data_uncompacted:\n{str_disk_data_uncompacted}")
+ls_disk_data = save_to_disk(ls_dict_files)
 
-str_disk_data_compacted = compact_disc(str_disk_data_uncompacted)
+# Write uncompacted data to a file
+with open(uncompacted_file, "w") as file:
+    file.write(str(ls_disk_data))
 
-print(f"str_disk_data_compacted:\n{str_disk_data_compacted}")
+print(f"ls_disk_data:\n{ls_disk_data}")
 
-checksum = calculate_checksum(str_disk_data_compacted)
+# %%
+
+ls_disk_data_compacted = compact_disc(ls_disk_data)
+
+# Write compacted data to a file
+with open(compacted_file, "w") as file:
+    file.write(str(ls_disk_data_compacted))
+
+print(f"str_disk_data_compacted:\n{ls_disk_data_compacted}")
+
+checksum = calculate_checksum(ls_disk_data_compacted)
 
 print(f"checksum:\n{checksum}")
 
