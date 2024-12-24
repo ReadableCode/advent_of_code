@@ -65,7 +65,7 @@ def get_coords_of_all_symbol(ls_ls_map, symbol):
     return all_coords
 
 
-def check_coord_is_antinode(coords_to_check, ls_coords_of_symbol):
+def check_coord_is_antinode(coords_to_check, ls_coords_of_symbol, ignore_distance=True):
     for coord_one in ls_coords_of_symbol:
         for coord_two in ls_coords_of_symbol:
             if coord_one == coord_two:
@@ -78,8 +78,10 @@ def check_coord_is_antinode(coords_to_check, ls_coords_of_symbol):
                 coord_two, coords_to_check
             )
 
-            if (distance_from_coord_one * 2 == distance_from_coord_two) or (
-                distance_from_coord_two * 2 == distance_from_coord_one
+            if (
+                (distance_from_coord_one * 2 == distance_from_coord_two)
+                or (distance_from_coord_two * 2 == distance_from_coord_one)
+                or ignore_distance
             ):
                 # Collinearity Check using determinant method
                 x1, y1 = coord_one
@@ -92,6 +94,7 @@ def check_coord_is_antinode(coords_to_check, ls_coords_of_symbol):
                 if is_collinear and (
                     (distance_from_coord_one * 2 == distance_from_coord_two)
                     or (distance_from_coord_two * 2 == distance_from_coord_one)
+                    or ignore_distance
                 ):
                     # Point is an antinode and collinear
                     return True
