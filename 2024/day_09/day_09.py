@@ -1,9 +1,7 @@
 # %%
 # Imports #
 
-import copy
 import json
-from math import sqrt
 
 from tqdm import tqdm
 
@@ -92,14 +90,13 @@ def save_to_disk(ls_dict_files):
 def compact_disc(disk_input):
     ls_disk_input = list(disk_input)
 
-    for idx in range(len(ls_disk_input) - 1, 0, -1):
+    for idx in tqdm(range(len(ls_disk_input) - 1, 0, -1), desc="Compacting Disc"):
         if ls_disk_input[idx] == ".":
             continue
         if ls_disk_input.index(".") < idx:
-            # we need to move the bit there
+            # Move the bit to the nearest empty space
             ls_disk_input[ls_disk_input.index(".")] = ls_disk_input[idx]
             ls_disk_input[idx] = "."
-            print("".join(ls_disk_input))
 
     return "".join(ls_disk_input)
 
