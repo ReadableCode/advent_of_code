@@ -112,11 +112,7 @@ def get_all_paths(ls_ls_map, start_coords):
     return all_paths
 
 
-all_paths = get_all_paths(ls_ls_map, (7, 1))
-pprint_ls(all_paths)
-
-
-def score_trailhead_paths(ls_ls_map, all_paths):
+def score_trailhead_paths(ls_ls_map, all_paths, allow_dupe_nines=True):
     ls_reachable_nines = []
     for path in all_paths:
         reachable_nine_coords = path[-1]
@@ -127,7 +123,8 @@ def score_trailhead_paths(ls_ls_map, all_paths):
         print(f"reachable_nine: {reachable_nine}")
         ls_reachable_nines.append(reachable_nine)
 
-    ls_reachable_nines = list(set(ls_reachable_nines))
+    if not allow_dupe_nines:
+        ls_reachable_nines = list(set(ls_reachable_nines))
 
     return len(ls_reachable_nines)
 
@@ -171,7 +168,7 @@ print("-" * 100)
 
 
 dict_trailheads, running_score = score_all_trailheads(ls_ls_map)
-print(f"Results")
+print("Results")
 pprint_dict(dict_trailheads)
 print(f"Score: {running_score}")
 
