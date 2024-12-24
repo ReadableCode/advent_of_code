@@ -100,6 +100,56 @@ def compact_disc(ls_disk_data):
     return ls_disk_data
 
 
+def find_first_contiguous_space_of_size(ls_disk_data, num_blocks_needed, curr_index):
+    spaces_empty = 0
+    currently_counting_empty = False
+    starting_loc = 0
+    for i, item in enumerate(ls_disk_data):
+        if i >= curr_index:
+            return False, False
+        if item == ".":
+            if num_blocks_needed == 1:
+                return i, i
+            if currently_counting_empty:
+                spaces_empty += 1
+                if spaces_empty >= int(num_blocks_needed):
+                    ending_loc = i
+                    return starting_loc, ending_loc
+            else:
+                starting_loc = i
+                spaces_empty = 1
+                currently_counting_empty = True
+        else:
+            currently_counting_empty = False
+            spaces_empty = 0
+
+    return False, False
+
+
+def compact_disc_with_defrag(ls_disk_data, ls_dict_files):
+    ls_disk_data = ls_disk_data.copy()
+    max_file_id = list(ls_dict_files.keys())[-1]
+
+    for file_id in tqdm(range(max_file_id, 0, -1), desc="Compacting Disc"):
+        size_of_file = ls_dict_files.get(file_id).get("num_blocks")
+        indexes_of_file = list(
+            range(
+                ls_disk_data.index(str(file_id)),
+                ls_disk_data.index(str(file_id)) + int(size_of_file),
+            )
+        )
+        # find first place whole file fits
+        starting_loc, ending_loc = find_first_contiguous_space_of_size(
+            ls_disk_data, int(size_of_file), indexes_of_file[0]
+        )
+        if starting_loc and ending_loc:
+            for change_loc in range(starting_loc, ending_loc + 1):
+                ls_disk_data[change_loc] = str(file_id)
+            for erase_loc in indexes_of_file:
+                ls_disk_data[erase_loc] = "."
+    return ls_disk_data
+
+
 def calculate_checksum(str_disk_data):
     checksum = 0
     for pos, file_id in enumerate(str_disk_data):
@@ -112,17 +162,20 @@ def calculate_checksum(str_disk_data):
 # %%
 # Main #
 
-TEST_MODE = True
+KEEP_DEFRAGGED = True
+TEST_MODE = False
 if TEST_MODE:
     input_file = "day_09_input_test.txt"
     ls_dict_file = "day_09_output_test_files.json"
     uncompacted_file = "day_09_output_test_uncompacted.txt"
     compacted_file = "day_09_output_test_compacted.txt"
+    compacted_file_defragged = "day_09_output_test_compacted_defragged.txt"
 else:
     input_file = "day_09_input.txt"
     ls_dict_file = "day_09_output_files.json"
     uncompacted_file = "day_09_output_uncompacted.txt"
     compacted_file = "day_09_output_compacted.txt"
+    compacted_file_defragged = "day_09_output_compacted_defragged.txt"
 
 ls_disk_data = get_text_input_lists(input_file)
 
@@ -142,13 +195,18 @@ with open(uncompacted_file, "w") as file:
 
 print(f"ls_disk_data:\n{ls_disk_data}")
 
-# %%
+if KEEP_DEFRAGGED:
+    ls_disk_data_compacted = compact_disc_with_defrag(ls_disk_data, ls_dict_files)
+    # Write compacted data to a file
+    with open(compacted_file_defragged, "w") as file:
+        file.write(str(ls_disk_data_compacted))
+else:
+    ls_disk_data_compacted = compact_disc(ls_disk_data)
+    # Write compacted data to a file
+    with open(compacted_file, "w") as file:
+        file.write(str(ls_disk_data_compacted))
 
-ls_disk_data_compacted = compact_disc(ls_disk_data)
-
-# Write compacted data to a file
-with open(compacted_file, "w") as file:
-    file.write(str(ls_disk_data_compacted))
+print("-" * 100)
 
 print(f"str_disk_data_compacted:\n{ls_disk_data_compacted}")
 
