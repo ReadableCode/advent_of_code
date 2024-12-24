@@ -103,19 +103,17 @@ def compact_disc(disk_input):
 
 def calculate_checksum(str_disk_data):
     checksum = 0
-    for pos in range(len(str_disk_data) - 1):
-        file_id = str_disk_data[pos]
-        if file_id == ".":
-            continue
-        checksum = checksum + (pos * int(file_id))
-
+    for pos, file_id in enumerate(str_disk_data):
+        # Only skip dots; include all numeric IDs, including "0"
+        if file_id != ".":
+            checksum += pos * int(file_id)
     return checksum
 
 
 # %%
 # Main #
 
-TEST_MODE = False
+TEST_MODE = True
 if TEST_MODE:
     ls_disk_input = get_text_input_lists("day_09_input_test.txt")
 else:
