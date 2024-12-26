@@ -63,15 +63,6 @@ def get_text_input_list(file_path):
     return text_input
 
 
-"""
-As you observe them for a while, you find that the stones have a consistent behavior. Every time you blink, the stones each simultaneously change according to the first applicable rule in this list:
-
-If the stone is engraved with the number 0, it is replaced by a stone engraved with the number 1.
-If the stone is engraved with a number that has an even number of digits, it is replaced by two stones. The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone. (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
-If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.
-"""
-
-
 def apply_rules_to_list(ls_text_input):
     ls_text_input_copy = ls_text_input.copy()
     ls_text_input_return = []
@@ -79,34 +70,25 @@ def apply_rules_to_list(ls_text_input):
     i = 0
     while i < (num_items):
         item = ls_text_input_copy[i]
-        print("-" * 20)
-        print(f"Starting list:\n{ls_text_input_return}")
-        print(f"Applying rule to item {i} which is: {item}")
         if item == 0:
-            print("Apply rule 1 bc numer is 0")
             ls_text_input_return.append(1)
         elif len(str(item)) % 2 == 0:
-            print("Applying rule 2 bc even numbers")
             len_of_item = len(str(item))
             half_item = int(len_of_item / 2)
-            print(f"item: {item} has half num digits: {half_item}")
             ls_text_input_return.append(int(str(item)[:half_item]))
             ls_text_input_return.append(int(str(item)[half_item:]))
             # skip the newly added item
             # i = i + 1
         else:
-            print("Applying rule 3 bc nothing else applied")
             ls_text_input_return.append(ls_text_input_copy[i] * 2024)
         i = i + 1
-        print(ls_text_input_return)
 
     return ls_text_input_return
 
 
 def apply_iterations_of_rules(ls_text_input, num_iterations):
     ls_text_input_return = ls_text_input.copy()
-    for i in range(num_iterations):
-        print(f"Running Iteration number: {i}")
+    for i in tqdm(range(num_iterations), desc="Iterations"):
         ls_text_input_return = apply_rules_to_list(ls_text_input_return)
 
     return ls_text_input_return
@@ -134,9 +116,9 @@ print("-" * 100)
 # %%
 
 
-ls_text_input_return = apply_iterations_of_rules(ls_text_input, 25)
+ls_text_input_return = apply_iterations_of_rules(ls_text_input, 75)
 print("Results")
-print(ls_text_input_return)
+# print(ls_text_input_return)
 print(f"Length of list is now: {len(ls_text_input_return)}")
 
 
