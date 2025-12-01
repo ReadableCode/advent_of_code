@@ -54,8 +54,8 @@ def move_dial(starting_location, direction, number_moves, debug=False):
     return dial_locations[curr_location], times_passed_zero
 
 
-# ending_loc, times_passed_zero = move_dial(10, "R", 112, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+ending_loc, times_passed_zero = move_dial(10, "R", 112, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
 # ending_loc, times_passed_zero = move_dial(90, "R", 10, debug=True)
 # print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
@@ -110,19 +110,24 @@ def perform_moves(starting_location, ls_moves, debug=False):
             else None
         )
         curr_location, times_passed_zero_this_move = move_dial(
-            curr_location, direction, number_moves, debug=debug
+            curr_location, direction, number_moves, debug=False
         )
+
+        times_zero_passed += times_passed_zero_this_move
         (
             print(
-                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times"
+                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times resulting in times_zero_passed: {times_zero_passed}"
             )
             if debug
             else None
         )
-        times_zero_passed += times_passed_zero_this_move
         if curr_location == 0:
             times_zero_hit += 1
-            print(f"Ending on 0, adding 1 resulting in: {times_zero_hit}")
+            (
+                print(f"Ending on 0, adding 1 resulting in: {times_zero_hit}")
+                if debug
+                else None
+            )
 
     return curr_location, times_zero_hit, times_zero_passed
 
@@ -154,7 +159,7 @@ assert times_zero_passed == 1
 
 
 # %%
-# Sample #
+# Sample Part 01 #
 
 ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
 starting_location = 50
