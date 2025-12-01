@@ -75,7 +75,8 @@ def perform_moves(starting_location, ls_moves, debug=False):
         times_zero_passed += times_passed_zero_this_move
         if debug:
             print(
-                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times resulting in times_zero_passed: {times_zero_passed}"
+                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move}"
+                f" times resulting in times_zero_passed: {times_zero_passed}"
             )
 
         if curr_location == 0:
@@ -138,10 +139,8 @@ assert times_zero_hit == 969
 
 
 # %%
-# Tests Passing #
+# Tests Ongoing #
 
-
-# Sample #
 
 ls_input = ["R100"]
 starting_location = 0
@@ -154,59 +153,64 @@ print(
 )
 assert times_zero_passed == 1
 
-ending_loc, times_passed_zero = move_dial(10, "R", 112, debug=True)
+
+# %%
+
+
+ending_loc, times_passed_zero = move_dial(10, "R", 112, debug=False)
 print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# ending_loc, times_passed_zero = move_dial(90, "R", 10, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+# %%
 
-# ending_loc, times_passed_zero = move_dial(0, "L", 1, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+ending_loc, times_passed_zero = move_dial(90, "R", 10, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# ending_loc, times_passed_zero = move_dial(50, "L", 68, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+# %%
 
-# ending_loc, times_passed_zero = move_dial(82, "L", 30, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+ending_loc, times_passed_zero = move_dial(0, "L", 1, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# ending_loc, times_passed_zero = move_dial(52, "R", 48, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+# %%
 
-# ending_loc, times_passed_zero = move_dial(2, "L", 2, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+ending_loc, times_passed_zero = move_dial(50, "L", 68, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+
+# %%
+
+ending_loc, times_passed_zero = move_dial(82, "L", 30, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+
+# %%
+
+ending_loc, times_passed_zero = move_dial(52, "R", 48, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+
+# %%
+
+ending_loc, times_passed_zero = move_dial(2, "L", 2, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+
+# %%
 
 # Be careful: if the dial were pointing at 50, a single rotation like R1000 would cause the dial
 # to point at 0 ten times before returning back to 50!
-# ending_loc, times_passed_zero = move_dial(50, "R", 1000, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
-
-# ending_loc, times_passed_zero = move_dial(0, "R", 1000, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
-
-# ending_loc, times_passed_zero = move_dial(52, "R", 48, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
-
-# ending_loc, times_passed_zero = move_dial(0, "R", 100, debug=True)
-# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
-
+ending_loc, times_passed_zero = move_dial(50, "R", 1000, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
 # %%
-# Vars #
 
-
-# example test 2
-# ls_input = ["R1000"]
-# starting_location = 50
-# debug = True
-
-# example test 3
-# ls_input = ["R1000", "R1000"]
-# starting_location = 50
-# debug = True
-
+ending_loc, times_passed_zero = move_dial(0, "R", 1000, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
 # %%
-# Part 2 #
+
+ending_loc, times_passed_zero = move_dial(52, "R", 48, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
+
+# %%
+
+ending_loc, times_passed_zero = move_dial(0, "R", 100, debug=True)
+print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
 
 # %%
