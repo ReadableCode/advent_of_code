@@ -29,14 +29,15 @@ def get_text_input_lists(file_path):
 
 
 def move_dial(starting_location, direction, number_moves, debug=False):
-
     starting_dial_index = dial_locations.index(int(starting_location))
-    print(f"starting_index: {starting_dial_index}") if debug else None
+    if debug:
+        print(f"starting_index: {starting_dial_index}")
 
     times_passed_zero = 0
     curr_location = starting_dial_index
     for i in range(number_moves):
-        print(i) if debug else None
+        if debug:
+            print(i)
         if direction == "L":
             if curr_location == 0:
                 curr_location = len(dial_locations) - 1
@@ -49,10 +50,109 @@ def move_dial(starting_location, direction, number_moves, debug=False):
                 times_passed_zero += 1
             else:
                 curr_location += 1
-        print(f"    curr_location: {curr_location}") if debug else None
+        if debug:
+            print(f"    curr_location: {curr_location}")
 
     return dial_locations[curr_location], times_passed_zero
 
+
+def perform_moves(starting_location, ls_moves, debug=False):
+    curr_location = starting_location
+    times_zero_hit = 0
+    times_zero_passed = 0
+
+    for move_item in ls_moves:
+        direction = move_item[0]
+        number_moves = int(move_item[1:])
+        if debug:
+            print(
+                f"--------------- Processing Move from {curr_location}, Move: {move_item} ---------------"
+            )
+        curr_location, times_passed_zero_this_move = move_dial(
+            curr_location, direction, number_moves, debug=False
+        )
+
+        times_zero_passed += times_passed_zero_this_move
+        if debug:
+            print(
+                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times resulting in times_zero_passed: {times_zero_passed}"
+            )
+
+        if curr_location == 0:
+            times_zero_hit += 1
+            if debug:
+                print(f"Ending on 0, adding 1 resulting in: {times_zero_hit}")
+
+    return curr_location, times_zero_hit, times_zero_passed
+
+
+# ############### Tests Passing ############### #
+
+# Sample Part 01 #
+ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
+starting_location = 50
+debug = True
+ending_location, times_zero_hit, times_zero_passed = perform_moves(
+    starting_location, ls_input, debug=debug
+)
+print(
+    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+)
+assert times_zero_hit == 3
+
+# Sample Part 02 #
+ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
+starting_location = 50
+debug = True
+ending_location, times_zero_hit, times_zero_passed = perform_moves(
+    starting_location, ls_input, debug=debug
+)
+print(
+    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+)
+assert times_zero_passed == 6
+
+# Part 01 #
+ls_input = get_text_input_lists("day_01_part_01_input.txt")
+starting_location = 50
+debug = False
+ending_location, times_zero_hit, times_zero_passed = perform_moves(
+    starting_location, ls_input, debug=debug
+)
+print(
+    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+)
+assert times_zero_hit == 969
+
+# Part 02 #
+# ls_input = get_text_input_lists("day_01_part_01_input.txt")
+# starting_location = 50
+# debug = False
+# ending_location, times_zero_hit, times_zero_passed = perform_moves(
+#     starting_location, ls_input, debug=debug
+# )
+# print(
+#     f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+# )
+# # assert times_zero_passed ==
+
+
+# %%
+# Tests Passing #
+
+
+# Sample #
+
+ls_input = ["R100"]
+starting_location = 0
+debug = True
+ending_location, times_zero_hit, times_zero_passed = perform_moves(
+    starting_location, ls_input, debug=debug
+)
+print(
+    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+)
+assert times_zero_passed == 1
 
 ending_loc, times_passed_zero = move_dial(10, "R", 112, debug=True)
 print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
@@ -94,44 +194,6 @@ print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 # Vars #
 
 
-def perform_moves(starting_location, ls_moves, debug=False):
-    curr_location = starting_location
-    times_zero_hit = 0
-    times_zero_passed = 0
-
-    for move_item in ls_moves:
-        direction = move_item[0]
-        number_moves = int(move_item[1:])
-        (
-            print(
-                f"--------------- Processing Move from {curr_location}, Move: {move_item} ---------------"
-            )
-            if debug
-            else None
-        )
-        curr_location, times_passed_zero_this_move = move_dial(
-            curr_location, direction, number_moves, debug=False
-        )
-
-        times_zero_passed += times_passed_zero_this_move
-        (
-            print(
-                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times resulting in times_zero_passed: {times_zero_passed}"
-            )
-            if debug
-            else None
-        )
-        if curr_location == 0:
-            times_zero_hit += 1
-            (
-                print(f"Ending on 0, adding 1 resulting in: {times_zero_hit}")
-                if debug
-                else None
-            )
-
-    return curr_location, times_zero_hit, times_zero_passed
-
-
 # example test 2
 # ls_input = ["R1000"]
 # starting_location = 50
@@ -142,82 +204,9 @@ def perform_moves(starting_location, ls_moves, debug=False):
 # starting_location = 50
 # debug = True
 
-# %%
-# Sample #
-
-# example test 3
-ls_input = ["R100"]
-starting_location = 0
-debug = True
-ending_location, times_zero_hit, times_zero_passed = perform_moves(
-    starting_location, ls_input, debug=debug
-)
-print(
-    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
-)
-assert times_zero_passed == 1
-
-
-# %%
-# Sample Part 01 #
-
-ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
-starting_location = 50
-debug = True
-ending_location, times_zero_hit, times_zero_passed = perform_moves(
-    starting_location, ls_input, debug=debug
-)
-print(
-    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
-)
-assert times_zero_hit == 3
-
-
-# %%
-# Sample Part 2 #
-
-ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
-starting_location = 50
-debug = True
-ending_location, times_zero_hit, times_zero_passed = perform_moves(
-    starting_location, ls_input, debug=debug
-)
-print(
-    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
-)
-assert times_zero_passed == 6
-
-
-# %%
-# Part 1 #
-
-# part 01
-ls_input = get_text_input_lists("day_01_part_01_input.txt")
-starting_location = 50
-debug = False
-ending_location, times_zero_hit, times_zero_passed = perform_moves(
-    starting_location, ls_input, debug=debug
-)
-print(
-    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
-)
-assert times_zero_hit == 969
-
 
 # %%
 # Part 2 #
-
-# part 02
-ls_input = get_text_input_lists("day_01_part_01_input.txt")
-starting_location = 50
-debug = False
-ending_location, times_zero_hit, times_zero_passed = perform_moves(
-    starting_location, ls_input, debug=debug
-)
-print(
-    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
-)
-# assert times_zero_passed ==
 
 
 # %%
