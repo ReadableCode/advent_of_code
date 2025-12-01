@@ -43,11 +43,13 @@ def move_dial(starting_location, direction, number_moves, debug=False):
             number_moves += len(dial_locations)
             print(f"Moving {number_moves} instead") if debug else None
             times_passed_zero += 1
+
         elif (starting_dial_index + number_moves) > len(dial_locations) - 1:
             print("wrapping rightward") if debug else None
             number_moves -= len(dial_locations)
             print(f"Moving {number_moves} instead") if debug else None
             times_passed_zero += 1
+
         else:
             (
                 print(f"Returning dial_locations[{starting_dial_index + number_moves}]")
@@ -57,33 +59,41 @@ def move_dial(starting_location, direction, number_moves, debug=False):
             ending_loc = dial_locations[starting_dial_index + number_moves]
             if ending_loc == 0:
                 times_passed_zero += 1
-            print(
-                f"Returning ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}"
-            )
+
             return ending_loc, times_passed_zero
 
 
-# print(move_dial(10, "R", 112, debug=True))
+# ending_loc, times_passed_zero = move_dial(10, "R", 112, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(90, "R", 10, debug=True))
+# ending_loc, times_passed_zero = move_dial(90, "R", 10, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(0, "L", 1, debug=True))
+# ending_loc, times_passed_zero = move_dial(0, "L", 1, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(50, "L", 68, debug=True))
+# ending_loc, times_passed_zero = move_dial(50, "L", 68, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(82, "L", 30, debug=True))
+# ending_loc, times_passed_zero = move_dial(82, "L", 30, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(52, "R", 48, debug=True))
+# ending_loc, times_passed_zero = move_dial(52, "R", 48, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(2, "L", 2, debug=True))
+# ending_loc, times_passed_zero = move_dial(2, "L", 2, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# Be careful: if the dial were pointing at 50, a single rotation like R1000 would cause the dial to point at 0 ten times before returning back to 50!
-# print(move_dial(50, "R", 1000, debug=True))
+# Be careful: if the dial were pointing at 50, a single rotation like R1000 would cause the dial
+# to point at 0 ten times before returning back to 50!
+# ending_loc, times_passed_zero = move_dial(50, "R", 1000, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-# print(move_dial(0, "R", 1000, debug=True))
+# ending_loc, times_passed_zero = move_dial(0, "R", 1000, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
-#  52, Move: R48
-print(move_dial(52, "R", 48, debug=True))
+# ending_loc, times_passed_zero = move_dial(52, "R", 48, debug=True)
+# print(f"ending_loc: {ending_loc}, times_passed_zero: {times_passed_zero}")
 
 
 # %%
@@ -97,26 +107,30 @@ def perform_moves(starting_location, ls_moves, debug=False):
     for move_item in ls_moves:
         direction = move_item[0]
         number_moves = int(move_item[1:])
-        print(
-            f"--------------- Processing Move from {curr_location}, Move: {move_item} ---------------"
+        (
+            print(
+                f"--------------- Processing Move from {curr_location}, Move: {move_item} ---------------"
+            )
+            if debug
+            else None
         )
         curr_location, times_passed_zero_this_move = move_dial(
             curr_location, direction, number_moves, debug=debug
         )
-        print(
-            f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times"
+        (
+            print(
+                f"        Ended on {curr_location}, passed 0: {times_passed_zero_this_move} times"
+            )
+            if debug
+            else None
         )
         times_zero_passed += times_passed_zero_this_move
         if curr_location == 0:
             times_zero_hit += 1
+            print(f"Ending on 0, adding 1 resulting in: {times_zero_hit}")
 
     return curr_location, times_zero_hit, times_zero_passed
 
-
-# example test
-ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
-starting_location = 50
-debug = True
 
 # example test 2
 # ls_input = ["R1000"]
@@ -129,24 +143,55 @@ debug = True
 # debug = True
 
 # example test 3
-# ls_input = ["L50"]
+# ls_input = ["L51", "L51"]
 # starting_location = 50
 # debug = True
 
-# part 01 and part 02
-# ls_input = get_text_input_lists("day_01_part_01_input.txt")
-# starting_location = 50
-# debug = False
+# %%
+# Sample #
 
-print(ls_input)
-
+ls_input = get_text_input_lists("day_01_part_01_input_test.txt")
+starting_location = 50
+debug = True
 ending_location, times_zero_hit, times_zero_passed = perform_moves(
     starting_location, ls_input, debug=debug
 )
 print(
     f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
 )
+assert times_zero_hit == 3
 
 
 # %%
-# Vars #
+# Part 1 #
+
+# part 01
+ls_input = get_text_input_lists("day_01_part_01_input.txt")
+starting_location = 50
+debug = False
+ending_location, times_zero_hit, times_zero_passed = perform_moves(
+    starting_location, ls_input, debug=debug
+)
+print(
+    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+)
+assert times_zero_hit == 969
+
+
+# %%
+# Part 2 #
+
+# part 02
+ls_input = get_text_input_lists("day_01_part_01_input.txt")
+starting_location = 50
+debug = False
+ending_location, times_zero_hit, times_zero_passed = perform_moves(
+    starting_location, ls_input, debug=debug
+)
+print(
+    f"Ending location: {ending_location}, times_zero_hit: {times_zero_hit}, times_zero_passed: {times_zero_passed}"
+)
+# assert times_zero_passed ==
+
+
+# %%
