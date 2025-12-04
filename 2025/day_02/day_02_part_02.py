@@ -93,8 +93,8 @@ def check_id_valid(id_to_check, debug=False):
     # else:
     #     print(f"{id_to_check[0]} is not 0")
 
-    # check for only 1 digit
-    if len(set(id_to_check)) == 1:
+    # check for only 1 digit and repeating
+    if len(set(id_to_check)) == 1 % len(id_to_check) > 1:
         return False
 
     # for all possible chunk sizes check if len(set(ls_chunks)) == 1
@@ -123,6 +123,11 @@ id_to_check = "123123123"
 test_value = check_id_valid(id_to_check, debug=True)
 print(f"Result of {id_to_check} = {test_value}")
 assert not test_value
+
+id_to_check = "2"
+test_value = check_id_valid(id_to_check, debug=True)
+print(f"Result of {id_to_check} = {test_value}")
+assert test_value
 
 # %%
 
@@ -221,7 +226,9 @@ print(ls_test_input)
 
 num_invalid_ids, ls_invalid_ids = test_list_of_id_ranges(ls_test_input)
 print(num_invalid_ids)
-print(f"Sum of invalid IDs: {get_sum_of_list(ls_invalid_ids)}")
+sum_of_invalid_ids = get_sum_of_list(ls_invalid_ids)
+print(f"Sum of invalid IDs: {sum_of_invalid_ids}")
+assert sum_of_invalid_ids == 11323661261
 
 
 # %%

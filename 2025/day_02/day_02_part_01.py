@@ -156,8 +156,9 @@ print(ls_test_input)
 
 num_invalid_ids, ls_invalid_ids = test_list_of_id_ranges(ls_test_input)
 print(num_invalid_ids)
-print(f"Sum of invalid IDs: {get_sum_of_list(ls_invalid_ids)}")
-
+sum_of_invalid_ids = get_sum_of_list(ls_invalid_ids)
+print(f"Sum of invalid IDs: {sum_of_invalid_ids}")
+assert sum_of_invalid_ids == 9188031749
 
 # %%
 # Vars #
