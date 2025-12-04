@@ -108,11 +108,11 @@ assert max_joltage == 92
 # %%
 
 
-def get_total_joltage_from_list_lines(text_lines):
+def get_total_joltage_from_list_lines(text_lines, num_digits=2):
     sum_lines = 0
 
     for text_line in text_lines:
-        max_joltage = get_max_joltage(text_line)
+        max_joltage = get_max_joltage(text_line, num_digits=num_digits)
         sum_lines += max_joltage
 
     return sum_lines
@@ -124,6 +124,12 @@ sum_lines = get_total_joltage_from_list_lines(text_lines)
 print(sum_lines)
 assert sum_lines == 357
 
+text_lines = get_text_input_lists("day_03_part_01_input_test.txt")
+print(text_lines)
+sum_lines = get_total_joltage_from_list_lines(text_lines, num_digits=12)
+print(sum_lines)
+assert sum_lines == 3121910778619
+
 
 # %%
 # Part 01 #
@@ -134,6 +140,12 @@ print(text_lines)
 sum_lines = get_total_joltage_from_list_lines(text_lines)
 print(sum_lines)
 assert sum_lines == 17694
+
+text_lines = get_text_input_lists("day_03_part_01_input.txt")
+print(text_lines)
+sum_lines = get_total_joltage_from_list_lines(text_lines, num_digits=12)
+print(sum_lines)
+assert sum_lines == 175659236361660
 
 
 # %%
