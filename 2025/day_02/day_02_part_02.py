@@ -36,30 +36,95 @@ def get_input_data(file_path):
 # %%
 
 
-def check_id_valid(id_to_check):
+def get_chunks(id_to_check, chunk_size, debug=False):
+    if debug:
+        print("-" * 50)
+
+    ls_chunks = []
+
+    if len(id_to_check) % chunk_size != 0:
+        if debug:
+            print(f"id cant be divided evenly into {chunk_size} sized chunks")
+        return []
+
+    num_chunks = int(len(id_to_check) / chunk_size)
+
+    if debug:
+        print(f"Num chunks: {num_chunks}")
+
+    for i in range(num_chunks):
+        start_index = chunk_size * i
+        end_index = chunk_size * (i + 1)
+        chunk = id_to_check[start_index:end_index]
+        if debug:
+            print(i)
+            print(f"getting {start_index} - {end_index}")
+        ls_chunks.append(chunk)
+
+    return ls_chunks
+
+
+id_to_check = "123123"
+chunk_size = 5
+ls_chunks = get_chunks(id_to_check, chunk_size, debug=True)
+print(f"id_to_check: {id_to_check} = ls_chunks: {ls_chunks}")
+assert not ls_chunks
+
+id_to_check = "123123"
+chunk_size = 3
+ls_chunks = get_chunks(id_to_check, chunk_size, debug=True)
+print(f"id_to_check: {id_to_check} = ls_chunks: {ls_chunks}")
+assert len(ls_chunks) == 2
+
+id_to_check = "123123"
+chunk_size = 2
+ls_chunks = get_chunks(id_to_check, chunk_size, debug=True)
+print(f"id_to_check: {id_to_check} = ls_chunks: {ls_chunks}")
+assert len(ls_chunks) == 3
+
+# %%
+
+
+def check_id_valid(id_to_check, debug=False):
+    if debug:
+        print("-" * 50)
     if id_to_check[0] == "0":
         return False
     # else:
     #     print(f"{id_to_check[0]} is not 0")
 
-    if len(id_to_check) % 2 != 0:
-        return True
-
-    half_way_point = int(len(id_to_check) / 2)
-    # print(f"half_way_point of {id_to_check} is {half_way_point}")
-
-    first_half, second_half = (
-        id_to_check[:half_way_point],
-        id_to_check[half_way_point:],
-    )
-
-    # print(f"First half: {first_half}")
-    # print(f"Second half: {second_half}")
-
-    if first_half == second_half:
+    # check for only 1 digit
+    if len(set(id_to_check)) == 1:
         return False
-    else:
-        return True
+
+    # for all possible chunk sizes check if len(set(ls_chunks)) == 1
+    for chunk_size in range(int(len(id_to_check) / 2), 0, -1):
+        if debug:
+            print(f"Checking chunk size {chunk_size}")
+        ls_chunks = get_chunks(id_to_check, chunk_size)
+        if len(set(ls_chunks)) == 1:
+            return False
+
+    return True
+
+
+id_to_check = "12341234"
+test_value = check_id_valid(id_to_check, debug=True)
+print(f"Result of {id_to_check} = {test_value}")
+assert not test_value
+
+
+id_to_check = "1111111"
+test_value = check_id_valid(id_to_check, debug=True)
+print(f"Result of {id_to_check} = {test_value}")
+assert not test_value
+
+id_to_check = "123123123"
+test_value = check_id_valid(id_to_check, debug=True)
+print(f"Result of {id_to_check} = {test_value}")
+assert not test_value
+
+# %%
 
 
 id_to_check = "0101"
@@ -108,7 +173,7 @@ num_invalid_ids, ls_invalid_ids = check_range_of_ids(
     id_range_to_test[0], id_range_to_test[1], debug=True
 )
 print(f"Result of range {id_range_to_test} = {num_invalid_ids}")
-assert num_invalid_ids == 1
+assert num_invalid_ids == 2
 
 # %%
 
