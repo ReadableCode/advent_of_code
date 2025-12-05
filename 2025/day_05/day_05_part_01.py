@@ -35,7 +35,24 @@ def get_fresh_ranges(file_path):
         start_of_range, end_of_range = text_line.split("-")
         fresh_ranges.append((int(start_of_range), int(end_of_range)))
 
-    return fresh_ranges
+    # sort by start
+    fresh_ranges.sort(key=lambda x: x[0])
+
+    # merge ranges
+
+    merged = []
+    current_start, current_end = fresh_ranges[0]
+
+    for start, end in fresh_ranges[1:]:
+        if start <= current_end:  # overlap
+            current_end = max(current_end, end)
+        else:  # no overlap → push previous
+            merged.append((current_start, current_end))
+            current_start, current_end = start, end
+
+    # push last
+    merged.append((current_start, current_end))
+    return merged
 
 
 def get_available_ids_from_file(file_path):
@@ -87,35 +104,6 @@ def get_list_fresh_ids_from_available_ids(ls_fresh_ranges, available_ids):
     return ls_fresh_ids_available
 
 
-def get_max_fresh_id(ls_fresh_ranges):
-    max_fresh_id = 0
-    for fresh_range in ls_fresh_ranges:
-        max_fresh_id = max(max_fresh_id, fresh_range[1])
-
-    return max_fresh_id
-
-
-def count_all_possible_fresh_ids(ls_fresh_ranges):
-    num_fresh_ids = 0
-    use_tqdm = "ipykernel" not in sys.argv[0]
-    max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
-
-    iterator = range(0, max_fresh_id + 1)
-    if use_tqdm:
-        iterator = tqdm(
-            iterator,
-            total=max_fresh_id + 1,
-            desc="Counting fresh IDs",
-            unit="id",
-        )
-
-    for available_id in iterator:
-        if check_if_id_fresh(ls_fresh_ranges, available_id):
-            num_fresh_ids += 1
-
-    return num_fresh_ids
-
-
 # %%
 
 
@@ -163,6 +151,36 @@ assert num_fresh_ids == 525
 
 
 # %%
+
+
+def get_max_fresh_id(ls_fresh_ranges):
+    max_fresh_id = 0
+    for fresh_range in ls_fresh_ranges:
+        max_fresh_id = max(max_fresh_id, fresh_range[1])
+
+    return max_fresh_id
+
+
+def count_all_possible_fresh_ids(ls_fresh_ranges):
+    num_fresh_ids = 0
+    use_tqdm = "ipykernel" not in sys.argv[0]
+    max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
+
+    iterator = range(0, max_fresh_id + 1)
+    if use_tqdm:
+        iterator = tqdm(
+            iterator,
+            total=max_fresh_id + 1,
+            desc="Counting fresh IDs",
+            unit="id",
+        )
+
+    for available_id in iterator:
+        if check_if_id_fresh(ls_fresh_ranges, available_id):
+            num_fresh_ids += 1
+
+    return num_fresh_ids
+
 
 file_path = "day_05_part_01_input_test.txt"
 
