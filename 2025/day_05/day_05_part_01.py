@@ -56,15 +56,13 @@ def get_available_ids_from_file(file_path):
 
 def check_if_id_fresh(ls_fresh_ranges, available_id):
     for fresh_range in ls_fresh_ranges:
-        if (available_id >= int(fresh_range[0])) and (
-            available_id <= int(fresh_range[1])
-        ):
+        if (available_id >= fresh_range[0]) and (available_id <= fresh_range[1]):
             return True
 
     return False
 
 
-ls_fresh_ranges = [("3", "5"), ("10", "14"), ("16", "20"), ("12", "18")]
+ls_fresh_ranges = [(3, 5), (10, 14), (16, 20), (12, 18)]
 available_id = 3
 is_fresh = check_if_id_fresh(ls_fresh_ranges, available_id)
 assert is_fresh
