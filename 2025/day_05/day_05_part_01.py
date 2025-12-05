@@ -97,9 +97,10 @@ def get_max_fresh_id(ls_fresh_ranges):
     return max_fresh_id
 
 
-def count_available_ids(ls_fresh_ranges, max_fresh_id):
+def count_available_ids(ls_fresh_ranges):
     num_fresh_ids = 0
     use_tqdm = "ipykernel" not in sys.argv[0]
+    max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
 
     iterator = range(0, max_fresh_id + 1)
     if use_tqdm:
@@ -171,11 +172,7 @@ ls_fresh_ranges = get_fresh_ranges(file_path)
 print("ls_fresh_ranges")
 print(ls_fresh_ranges)
 
-
-max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
-print(f"max_fresh_id: {max_fresh_id}")
-
-num_fresh_ids = count_available_ids(ls_fresh_ranges, max_fresh_id)
+num_fresh_ids = count_available_ids(ls_fresh_ranges)
 print(f"Num fresh ids: {num_fresh_ids}")
 assert num_fresh_ids == 14
 
@@ -187,10 +184,7 @@ ls_fresh_ranges = get_fresh_ranges(file_path)
 print("ls_fresh_ranges")
 print(ls_fresh_ranges)
 
-max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
-print(f"max_fresh_id: {max_fresh_id}")
-
-num_fresh_ids = count_available_ids(ls_fresh_ranges, max_fresh_id)
+num_fresh_ids = count_available_ids(ls_fresh_ranges)
 print(f"Num fresh ids: {num_fresh_ids}")
 # assert num_fresh_ids == 14
 
