@@ -36,8 +36,6 @@ Process the database file from the new inventory management system. How many of 
 
 Your puzzle answer was 525.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 The Elves start bringing their spoiled inventory to the trash chute at the back of the kitchen.
 
@@ -52,3 +50,7 @@ Now, the second section of the database (the available ingredient IDs) is irrele
 The ingredient IDs that these ranges consider to be fresh are 3, 4, 5, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, and 20. So, in this example, the fresh ingredient ID ranges consider a total of 14 ingredient IDs to be fresh.
 
 Process the database file again. How many ingredient IDs are considered to be fresh according to the fresh ingredient ID ranges?
+
+Your puzzle answer was 333892124923577.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
