@@ -39,8 +39,6 @@ Consider your complete diagram of the paper roll locations. How many rolls of pa
 
 Your puzzle answer was 1435.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 Now, the Elves just need help accessing as much of the paper as they can.
 
@@ -170,3 +168,7 @@ Remove 1 roll of paper:
 Stop once no more rolls of paper are accessible by a forklift. In this example, a total of 43 rolls of paper can be removed.
 
 Start with your original diagram. How many rolls of paper in total can be removed by the Elves and their forklifts?
+
+Your puzzle answer was 8623.
+
+Both parts of this puzzle are complete! They provide two gold stars: **

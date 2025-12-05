@@ -1,6 +1,8 @@
 # %%
 # Imports #
 
+import os
+import sys
 
 # %%
 # Vars #
@@ -130,15 +132,24 @@ assert num_ad_rolls == 7
 # %%
 
 
-def count_moveable_rolls(text_arrays, debug=False):
-    if debug:
-        print("-" * 200)
-
+def get_ls_locations_from_array(text_arrays):
     list_all_locations = []
 
     for row_num in range(len(text_arrays)):
         for col_num in range(len(text_arrays[0])):
             list_all_locations.append((row_num, col_num))
+
+    return list_all_locations
+
+
+# %%
+
+
+def count_moveable_rolls(text_arrays, debug=False):
+    if debug:
+        print("-" * 200)
+
+    list_all_locations = get_ls_locations_from_array(text_arrays)
 
     if debug:
         print("list_all_locations")
@@ -174,5 +185,70 @@ text_arrays = get_grid("day_04_part_01_input.txt")
 num_moveable_rolls = count_moveable_rolls(text_arrays, debug=False)
 print(num_moveable_rolls)
 assert num_moveable_rolls == 1435
+
+
+# %%
+
+
+def move_rolls(text_arrays, debug=False, watch=False):
+    if debug:
+        print("-" * 200)
+
+    list_all_locations = get_ls_locations_from_array(text_arrays)
+
+    if debug:
+        print("list_all_locations")
+        print(list_all_locations)
+
+    num_moved_rolls = 0
+
+    any_rolls_moved = True
+    while any_rolls_moved:
+        any_rolls_moved = False
+        for location_tup in list_all_locations:
+            if debug:
+                print(f"----- Processing location:{location_tup} -----")
+            grid_value = get_grid_values(text_arrays, [location_tup])[0]
+            if debug:
+                print(f"Grid value is: {grid_value}")
+            if grid_value != "@":
+                continue
+            num_ad_rolls = count_ad_rolls(text_arrays, location_tup)
+            if num_ad_rolls < 4:
+                if debug:
+                    print(f"location:{location_tup} is moveable")
+                num_moved_rolls += 1
+                any_rolls_moved = True
+                # remove this roll
+                row_num, col_num = location_tup
+                text_arrays[row_num][col_num] = "."
+                if watch:
+                    # clear
+                    os.system("cls" if os.name == "nt" else "clear")
+                    for row in text_arrays:
+                        print(row)
+            else:
+                if debug:
+                    print(f"location:{location_tup} is not moveable")
+
+    return num_moved_rolls
+
+
+text_arrays = get_grid("day_04_part_01_input_test.txt")
+watch = True
+if "ipykernel" in sys.argv[0]:
+    watch = False
+num_moved_rolls = move_rolls(text_arrays, debug=False, watch=watch)
+print(num_moved_rolls)
+assert num_moved_rolls == 43
+
+text_arrays = get_grid("day_04_part_01_input.txt")
+watch = True
+if "ipykernel" in sys.argv[0]:
+    watch = False
+num_moved_rolls = move_rolls(text_arrays, debug=False, watch=watch)
+print(num_moved_rolls)
+# assert num_moved_rolls == 43
+
 
 # %%
