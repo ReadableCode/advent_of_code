@@ -1,6 +1,9 @@
 # %%
 # Imports #
 
+import sys
+
+from tqdm import tqdm  # type: ignore
 
 # %%
 # Vars #
@@ -30,7 +33,7 @@ def get_fresh_ranges(file_path):
             break
 
         start_of_range, end_of_range = text_line.split("-")
-        fresh_ranges.append((start_of_range, end_of_range))
+        fresh_ranges.append((int(start_of_range), int(end_of_range)))
 
     return fresh_ranges
 
@@ -86,32 +89,32 @@ def get_list_fresh_ids_from_available_ids(ls_fresh_ranges, available_ids):
     return ls_fresh_ids_available
 
 
-# def get_fresh_ids(file_path, debug=False):
-#     fresh_ranges = get_fresh_ranges(file_path)
+def get_max_fresh_id(ls_fresh_ranges):
+    max_fresh_id = 0
+    for fresh_range in ls_fresh_ranges:
+        max_fresh_id = max(max_fresh_id, fresh_range[1])
 
-#     fresh_ids = []
-#     for fresh_range in fresh_ranges:
-#         start_of_range, end_of_range = fresh_range.split("-")
-
-#         start_of_range = int(start_of_range)
-#         end_of_range = int(end_of_range) + 1
-
-#         if debug:
-#             print(f"start_of_range: {start_of_range}, end_of_range: {end_of_range}")
-
-#         fresh_ids_this_range = range(start_of_range, end_of_range)
-#         fresh_ids.extend(fresh_ids_this_range)
-
-#     fresh_ids = list(set(fresh_ids))
-#     fresh_ids.sort()
-
-#     return fresh_ids
+    return max_fresh_id
 
 
-# def get_list_fresh_ids_from_available_ids(fresh_ids, available_ids):
-#     return [
-#         available_id for available_id in available_ids if int(available_id) in fresh_ids
-#     ]
+def count_available_ids(ls_fresh_ranges, max_fresh_id):
+    num_fresh_ids = 0
+    use_tqdm = "ipykernel" not in sys.argv[0]
+
+    iterator = range(0, max_fresh_id + 1)
+    if use_tqdm:
+        iterator = tqdm(
+            iterator,
+            total=max_fresh_id + 1,
+            desc="Counting fresh IDs",
+            unit="id",
+        )
+
+    for available_id in iterator:
+        if check_if_id_fresh(ls_fresh_ranges, available_id):
+            num_fresh_ids += 1
+
+    return num_fresh_ids
 
 
 # %%
@@ -159,5 +162,36 @@ num_fresh_ids = len(ls_fresh_ids_available)
 print(f"{num_fresh_ids} ids are fresh")
 assert num_fresh_ids == 525
 
+
+# %%
+
+file_path = "day_05_part_01_input_test.txt"
+
+ls_fresh_ranges = get_fresh_ranges(file_path)
+print("ls_fresh_ranges")
+print(ls_fresh_ranges)
+
+
+max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
+print(f"max_fresh_id: {max_fresh_id}")
+
+num_fresh_ids = count_available_ids(ls_fresh_ranges, max_fresh_id)
+print(f"Num fresh ids: {num_fresh_ids}")
+assert num_fresh_ids == 14
+
+# %%
+
+file_path = "day_05_part_01_input.txt"
+
+ls_fresh_ranges = get_fresh_ranges(file_path)
+print("ls_fresh_ranges")
+print(ls_fresh_ranges)
+
+max_fresh_id = get_max_fresh_id(ls_fresh_ranges)
+print(f"max_fresh_id: {max_fresh_id}")
+
+num_fresh_ids = count_available_ids(ls_fresh_ranges, max_fresh_id)
+print(f"Num fresh ids: {num_fresh_ids}")
+# assert num_fresh_ids == 14
 
 # %%
