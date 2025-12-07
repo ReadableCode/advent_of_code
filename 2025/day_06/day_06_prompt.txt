@@ -29,8 +29,6 @@ Solve the problems on the math worksheet. What is the grand total found by addin
 
 Your puzzle answer was 8108520669952.
 
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 The big cephalopods come back to check on how things are going. When they see that your grand total doesn't match the one expected by the worksheet, they realize they forgot to explain how to read cephalopod math.
 
@@ -51,3 +49,7 @@ Finally, the leftmost problem is 356 * 24 * 1 = 8544
 Now, the grand total is 1058 + 3253600 + 625 + 8544 = 3263827.
 
 Solve the problems on the math worksheet again. What is the grand total found by adding together all of the answers to the individual problems?
+
+Your puzzle answer was 11708563470209.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
