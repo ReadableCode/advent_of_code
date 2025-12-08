@@ -60,57 +60,78 @@ print(s_loc)
 # %%
 
 
-def cast_rays(ls_cleaned_row_lists, debug=False):
-    s_loc = find_s(ls_cleaned_row_lists)
-    print(f"s_loc: {s_loc}")
+def count_timelines(grid):
+    H = len(grid)
+    W = len(grid[0])
 
-    # put ray below S
-    ls_cleaned_row_lists[s_loc[0] + 1][s_loc[1]] = "|"
-    print_text_lines(ls_cleaned_row_lists)
+    # --- find S ---
+    start = None
+    for r in range(H):
+        for c in range(W):
+            if grid[r][c] == "S":
+                start = (r + 1, c)
+                break
+        if start:
+            break
 
-    for row_num in range(0, len(ls_cleaned_row_lists)):
-        for col_num in range(0, len(ls_cleaned_row_lists[0])):
-            cell_value_above = ls_cleaned_row_lists[row_num - 1][col_num]
-            cell_value = ls_cleaned_row_lists[row_num][col_num]
+    memo = {}  # <-- the crucial addition
 
-            if (cell_value == "^") and (cell_value_above == "|"):
-                ls_cleaned_row_lists[row_num][col_num - 1] = "|"
-                ls_cleaned_row_lists[row_num][col_num + 1] = "|"
-            elif cell_value_above == "|":
-                ls_cleaned_row_lists[row_num][col_num] = "|"
+    def dfs(r, c, visited):
+        # out of bounds → finished timeline
+        if r < 0 or r >= H or c < 0 or c >= W:
+            return 1
 
-    print_text_lines(ls_cleaned_row_lists)
-    return ls_cleaned_row_lists
+        state = (r, c)
 
+        # cycle protection (rare here)
+        if state in visited:
+            return 0
 
-def count_splits(ls_cleaned_row_lists_w_rays):
-    count = 0
-    for row_num in range(0, len(ls_cleaned_row_lists_w_rays)):
-        for col_num in range(0, len(ls_cleaned_row_lists_w_rays[0])):
-            cell_value_above = ls_cleaned_row_lists_w_rays[row_num - 1][col_num]
-            cell_value = ls_cleaned_row_lists_w_rays[row_num][col_num]
-            if (cell_value == "^") and (cell_value_above == "|"):
-                count += 1
+        # memoized result?
+        if state in memo:
+            return memo[state]
 
-    return count
+        visited.add(state)
+        cell = grid[r][c]
+
+        # empty or S → continue downward
+        if cell == "." or cell == "S":
+            result = dfs(r + 1, c, visited)
+            memo[state] = result
+            return result
+
+        # splitter → spawn left + right, both downward
+        if cell == "^":
+            left = dfs(r + 1, c - 1, visited.copy())
+            right = dfs(r + 1, c + 1, visited.copy())
+            result = left + right
+            memo[state] = result
+            return result
+
+        memo[state] = 0
+        return 0
+
+    return dfs(start[0], start[1], set())
 
 
 file_path = "day_07_part_01_input_test.txt"
-ls_cleaned_row_lists_w_rays = get_text_input_lines(file_path, debug=False)
-ls_cleaned_row_lists_w_rays = cast_rays(ls_cleaned_row_lists_w_rays, debug=True)
-print(s_loc)
-count = count_splits(ls_cleaned_row_lists_w_rays)
-print(count)
-assert count == 21
+grid = get_text_input_lines(
+    file_path, debug=False
+)  # list of strings or list of list of chars is fine
+
+ans = count_timelines(grid)
+print(ans)
+assert ans == 40
 
 
 # %%
 
 file_path = "day_07_part_01_input.txt"
-ls_cleaned_row_lists_w_rays = get_text_input_lines(file_path, debug=False)
-ls_cleaned_row_lists_w_rays = cast_rays(ls_cleaned_row_lists_w_rays, debug=True)
+grid = get_text_input_lines(file_path, debug=False)
 print(s_loc)
-count = count_splits(ls_cleaned_row_lists_w_rays)
-print(count)
+
+ans = count_timelines(grid)
+print(ans)
+assert ans == 135656430050438
 
 # %%
